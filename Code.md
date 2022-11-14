@@ -200,7 +200,7 @@ class HillCipher {
 ```
 
 
-### Transposition Cipher
+# Transposition Cipher
 
 ```java
 
