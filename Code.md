@@ -199,7 +199,6 @@ class HillCipher {
 
 ```
 
-
 # Transposition Cipher
 
 ```java
@@ -235,8 +234,8 @@ public class Transposition {
             }
         }
         return cipherText;
-    }  
-    
+    }
+
     public static String decrypt(String cipherText, int key) {
         char[][] railMatrix = new char[key][cipherText.length()];
         for (int i = 0; i < railMatrix.length; i++) {
@@ -296,7 +295,6 @@ public class Transposition {
 
 ```
 
-
 # Bruteforce Attack on Caesar Cipher
 
 ```java
@@ -330,7 +328,7 @@ void bruteforce() {
         input = ip.toCharArray();
     }
 }
-    
+
 ```
 
 # DES
@@ -472,7 +470,6 @@ public class AES {
 
 ```
 
-
 # RSA
 
 ```java
@@ -576,7 +573,6 @@ class SHA {
 }
 
 ```
-
 
 # MD5
 
@@ -699,6 +695,48 @@ public class DSA {
 
 ```
 
+# Diffie Hellman
+
+```java
+
+import java.util.*;
+
+public class Diffie {
+
+    public static void main(String[] args) {
+        long P, G, x, a, y, b, ka, kb;
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Both the users should be agreed upon the public keys G and P");
+        System.out.println("Enter value for public key G:");
+        G = sc.nextLong();
+        System.out.println("Enter value for public key P:");
+        P = sc.nextLong();
+        System.out.println("Enter value for private key a selected by user1:");
+        a = sc.nextLong();
+        System.out.println("Enter value for private key b selected by user2:");
+        b = sc.nextLong();
+
+        x = calculatePower(G, a, P);
+        y = calculatePower(G, b, P);
+        ka = calculatePower(y, a, P);
+        kb = calculatePower(x, b, P);
+        System.out.println("Secret key for User1 is:" + ka);
+        System.out.println("Secret key for User2 is:" + kb);
+    }
+
+    private static long calculatePower(long x, long y, long P) {
+        long result = 0;
+        if (y == 1) {
+            return x;
+        } else {
+            result = ((long) Math.pow(x, y)) % P;
+            return result;
+        }
+    }
+}
+
+```
+
 # File Operations
 
 ```java
@@ -734,4 +772,376 @@ String readFromFile() {
     return s;
 }
 
+```
+
+# Android
+
+## res/values/strings.xml
+
+```xml
+<?xml version = "1.0" encoding = "utf-8"?>
+<resources>
+   <string name = "app_name">Tutorialspoint</string>
+</resources>
+```
+
+## AndroidManifest.xml
+
+```xml
+<?xml version = "1.0" encoding = "utf-8"?>
+<manifest xmlns:android = "http://schemas.android.com/apk/res/android"
+   package = "com.example.tutorialspoint7.myapplication">
+   <uses-permission android:name = "android.permission.ACCESS_FINE_LOCATION" />
+   <uses-permission android:name = "android.permission.INTERNET" />
+   <application
+      android:allowBackup = "true"
+      android:icon = "@mipmap/ic_launcher"
+      android:label = "@string/app_name"
+      android:supportsRtl = "true"
+      android:theme = "@style/AppTheme">
+
+      <activity android:name = ".MainActivity">
+         <intent-filter>
+            <action android:name = "android.intent.action.MAIN" />
+
+            <category android:name = "android.intent.category.LAUNCHER" />
+         </intent-filter>
+      </activity>
+   </application>
+
+</manifest>
+```
+
+## Event
+
+```java
+package com.example.tharunoptimus.meow;
+
+import android.app.ProgressDialog;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+public class MainActivity extends ActionBarActivity {
+   private ProgressDialog progress;
+   Button b1,b2;
+
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_main);
+      progress = new ProgressDialog(this);
+
+      b1=(Button)findViewById(R.id.button);
+      b2=(Button)findViewById(R.id.button2);
+      b1.setOnClickListener(new View.OnClickListener() {
+
+         @Override
+         public void onClick(View v) {
+            TextView txtView = (TextView) findViewById(R.id.textView);
+            txtView.setTextSize(25);
+         }
+      });
+
+      b2.setOnClickListener(new View.OnClickListener() {
+
+         @Override
+         public void onClick(View v) {
+            TextView txtView = (TextView) findViewById(R.id.textView);
+            txtView.setTextSize(55);
+         }
+      });
+   }
+}
+```
+
+## GPS
+
+```java
+package com.example.tharunoptimus.meow;
+
+import android.app.AlertDialog;
+import android.app.Service;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.provider.Settings;
+import android.util.Log;
+
+public class GPSTracker extends Service implements LocationListener {
+
+    private final Context mContext;
+
+    
+    boolean isGPSEnabled = false;
+
+    
+    boolean isNetworkEnabled = false;
+
+    
+    boolean canGetLocation = false;
+
+    Location location; 
+    double latitude; 
+    double longitude; 
+
+    
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; 
+
+    
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; 
+
+    
+    protected LocationManager locationManager;
+
+    public GPSTracker(Context context) {
+        this.mContext = context;
+        getLocation();
+    }
+
+    public Location getLocation() {
+        try {
+            locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);        
+            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);    
+            isNetworkEnabled = locationManager
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                
+            } else {
+                this.canGetLocation = true;
+                
+                if (isNetworkEnabled) {
+                locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+
+                Log.d("Network", "Network");
+                if (locationManager != null) {
+                    location = locationManager
+                        .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                    if (location != null) {
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+                    }
+                }
+                }
+       
+                if (isGPSEnabled) {
+                if (location == null) {
+                    locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    Log.d("GPS Enabled", "GPS Enabled");
+                    if (locationManager != null) {
+                        location = locationManager
+                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                        if (location != null) {
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                        }
+                    }
+                }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return location;
+    }
+
+    public void stopUsingGPS(){
+        if(locationManager != null){
+            locationManager.removeUpdates(GPSTracker.this);
+        }
+    }
+
+    public double getLatitude(){
+        if(location != null){
+            latitude = location.getLatitude();
+        }
+
+        
+        return latitude;
+    }
+ 
+    public double getLongitude(){
+        if(location != null){
+            longitude = location.getLongitude();
+        }        
+        return longitude;
+    }
+
+    public boolean canGetLocation() {
+        return this.canGetLocation;
+    }
+
+    public void showSettingsAlert(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+
+        
+        alertDialog.setTitle("GPS is settings");
+
+        
+        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+
+        
+        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                mContext.startActivity(intent);
+            }
+        });
+
+        
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        
+        alertDialog.show();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+
+    @Override
+    public IBinder onBind(Intent arg0) {
+        return null;
+    }
+}
+```
+
+## Location
+
+```java
+package com.example.tharunoptimus.meow;
+
+import android.Manifest;
+import android.app.Activity;
+import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.test.mock.MockPackageManager;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+public class MainActivity extends Activity {
+
+   Button btnShowLocation;
+   private static final int REQUEST_CODE_PERMISSION = 2;
+   String mPermission = Manifest.permission.ACCESS_FINE_LOCATION;
+
+   GPSTracker gps;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        try {
+            if (ActivityCompat.checkSelfPermission(this, mPermission)
+                != MockPackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this, new String[]{mPermission},
+                REQUEST_CODE_PERMISSION);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        btnShowLocation = (Button) findViewById(R.id.button);      
+        btnShowLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                gps = new GPSTracker(MainActivity.this);
+                if(gps.canGetLocation()){
+                double latitude = gps.getLatitude();
+                double longitude = gps.getLongitude();
+                Toast.makeText(getApplicationContext(), "Your Location is - \nLat: "
+                    + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+                }else{
+                gps.showSettingsAlert();
+                }
+
+            }
+        });
+    }
+}
+```
+
+## Push
+
+```java
+package com.example.tharunoptimus.meowapp;
+
+import android.app.Notification;
+import android.app.NotificationManager;
+
+import android.content.Context;
+import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
+import android.view.View;
+
+import android.widget.Button;
+import android.widget.EditText;
+
+public class MainActivity extends ActionBarActivity {
+   EditText ed1,ed2,ed3;
+   protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_main);
+
+      ed1=(EditText)findViewById(R.id.editText);
+      ed2=(EditText)findViewById(R.id.editText2);
+      ed3=(EditText)findViewById(R.id.editText3);
+      Button b1=(Button)findViewById(R.id.button);
+
+      b1.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            String tittle=ed1.getText().toString().trim();
+            String subject=ed2.getText().toString().trim();
+            String body=ed3.getText().toString().trim();
+
+            NotificationManager notif=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+            Notification notify=new Notification.Builder
+               (getApplicationContext()).setContentTitle(tittle).setContentText(body).
+               setContentTitle(subject).setSmallIcon(R.drawable.abc).build();
+
+               notify.flags |= Notification.FLAG_AUTO_CANCEL;
+               notif.notify(0, notify);
+         }
+      });
+   }
+}
 ```
